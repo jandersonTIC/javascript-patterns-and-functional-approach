@@ -1,11 +1,12 @@
 import { handleStatus } from '../handles.js';
+import { partialize } from '../operators.js';
 
 const API = "http://localhost:3000/notas";
 
 export const getItemsFromNotas = notas =>
     notas.$flatMap(nota => nota.itens);
 
-export const filterItemsByCode = (items, code) =>
+export const filterItemsByCode = (code, items) =>
     items.filter(item => item.codigo === code);
 
 export const sumItemsValue = items =>
@@ -26,8 +27,17 @@ export const notaService = {
             });
     },
     sumItemsFromNotasWhereCodeIsEqualTo(code){
+        // Using Partialize (partial application)
+        const filterItems = partialize(filterItemsByCode, code);
+        // Composition
         return this
             .listAll()
-            .then(sumItemsFromNotasWhereCodeIsEqualTo(code));
+            .then(notas =>
+                sumItemsValue(
+                    filterItems(
+                        getItemsFromNotas(notas)
+                    )
+                )
+            );
     }
 }
