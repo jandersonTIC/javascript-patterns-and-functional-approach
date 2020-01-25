@@ -1,5 +1,5 @@
 import { handleStatus } from '../handles.js';
-import { partialize } from '../operators.js';
+import { partialize, compose } from '../operators.js';
 
 const API = "http://localhost:3000/notas";
 
@@ -27,16 +27,15 @@ export const notaService = {
             });
     },
     sumItemsFromNotasWhereCodeIsEqualTo(code){
-        // Using Partialize (partial application)
-        const filterItems = partialize(filterItemsByCode, code);
-        // Composition
+        // Using Partial Application (fn partialize) and
+        // Composition with Point-free Style.
         return this
             .listAll()
-            .then(notas =>
-                sumItemsValue(
-                    filterItems(
-                        getItemsFromNotas(notas)
-                    )
+            .then(
+                compose(
+                    sumItemsValue,
+                    partialize(filterItemsByCode, code),
+                    getItemsFromNotas
                 )
             );
     }
