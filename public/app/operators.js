@@ -13,3 +13,6 @@ export const pipe = (...fns) => value =>
         (previousValue, fn) => fn(previousValue),
         value
     );
+
+export const takeUntil = (times, fn) =>
+    () => times-- > 0 && fn();
