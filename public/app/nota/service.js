@@ -2,6 +2,15 @@ import { handleStatus } from '../handles.js';
 
 const API = "http://localhost:3000/notas";
 
+export const getItemsFromNotas = notas =>
+    notas.$flatMap(nota => nota.itens);
+
+export const filterItemsByCode = (items, code) =>
+    items.filter(item => item.codigo === code);
+
+export const sumItemsValue = items =>
+    items.reduce((total, item) => total + item.valor, 0);
+
 export const sumItemsFromNotasWhereCodeIsEqualTo = code => notas => notas
     .$flatMap(nota => nota.itens)
     .filter(item => item.codigo === code)
