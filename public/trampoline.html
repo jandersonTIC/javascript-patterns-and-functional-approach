@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trampoline</title>
+</head>
+<body>
+    <script>
+        // The Trampoline pattern is less performatic than Tail Call Optimization (TCO)
+        // of the native engine support. But TCO in JavaScript engines is not supported today.
+        const trampoline = fn => {
+            while (typeof fn === "function") {
+                fn = fn();
+            }
+            return fn;
+        }
+        const showCountDown = counter => {
+            console.log(counter);
+            if (counter < 0) {
+                return counter;
+            }
+            return () => showCountDown(counter - 1);
+        }
+        trampoline(showCountDown(20));
+
+        const factorial = (acc, num) => {
+            if (num <= 1) {
+                return acc;
+            }
+            return () => factorial(acc * num, num - 1);
+        }
+        console.log(trampoline(factorial(1, 4)));
+    </script>
+</body>
+</html>
