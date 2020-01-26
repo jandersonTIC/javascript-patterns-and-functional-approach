@@ -1,6 +1,6 @@
 import "./arrayHelpers.js";
 import { notaService as service } from "./nota/service.js";
-import { log } from "./handles.js";
+import { log, timeoutPromise } from "./handles.js";
 import {
     takeUntil,
     debounceTime,
@@ -8,8 +8,11 @@ import {
     compose
 } from "./operators.js";
 
-const getNotas = () => service
-    .sumItemsFromNotasWhereCodeIsEqualTo("2143")
+const getNotas = () => 
+    timeoutPromise(
+        200,
+        service.sumItemsFromNotasWhereCodeIsEqualTo("2143")
+    )
     .then(log)
     .catch(log);
 
