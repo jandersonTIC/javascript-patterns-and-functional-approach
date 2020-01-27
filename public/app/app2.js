@@ -3,7 +3,7 @@ import { decorate } from "./decorate.js";
 import { logExecutionTime, inspectMethod } from "./models/decorators.js";
 
 decorate(Person, {
-    speak: [logExecutionTime, inspectMethod],
+    speak: [inspectMethod({ excludeReturn: true }), logExecutionTime],
     getFullName: [logExecutionTime]
 })
 
