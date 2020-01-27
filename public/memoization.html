@@ -10,17 +10,17 @@
     <script>
         const memoizer = fn => {
             const cache = new Map();
-            return (...args) => {
+            const memoizedFn = (...args) => {
                 const key = JSON.stringify(args);
                 if (cache.has(key)) {
-                    console.log(`Buscou do cache ${key}`);
                     return cache.get(key);
                 }
-                console.log(`Não encontrou no cache ${key}. Adicionado ao cache...`);
                 const result= fn(...args);
                 cache.set(key, result);
                 return result;
             }
+            memoizedFn.clearCache = () => cache.clear();
+            return memoizedFn;
         }
         const factorial = memoizer(n => {
             if (n <= 1) {
@@ -37,6 +37,23 @@
         console.log(memoizedSumTwoNumbers(7, 2));
         console.log(memoizedSumTwoNumbers(3, 3));
         console.log(memoizedSumTwoNumbers(5, 5));
+
+        const requestHandler = res =>
+            res.ok ?
+                res.json() :
+                Promise.reject(res.statusText);
+
+        const getNotaFromId = id =>
+            fetch(`http://localhost:3000/notas/${id}`)
+                .then(requestHandler);
+
+        const memoizedGetNotaFromId = memoizer(getNotaFromId);
+        memoizedGetNotaFromId(1)
+            .then(console.log)
+            //.then(() => memoizedGetNotaFromId.clearCache())
+            .then(() => memoizedGetNotaFromId(1))
+            .then(console.log)
+            .catch(console.error);
     </script>
 </body>
 </html>
